@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_credit_card/credit_card_widget.dart';
+import 'package:stripe_app/bloc/pagar/pagar_bloc.dart';
 
-import '../models/models.dart';
 import '../widgets/widgets.dart';
 
 class TarjetaScreen extends StatelessWidget {
@@ -9,23 +10,24 @@ class TarjetaScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tarjeta = TarjetaCredito(
-        cardNumberHidden: '4242',
-        cardNumber: '4242424242424242',
-        brand: 'visa',
-        cvv: '213',
-        expiracyDate: '01/25',
-        cardHolderName: 'Fernando Herrera');
+    final tarjeta = context.watch<PagarBloc>().state.tarjeta;
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Pagar'),
+          leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                
+                context.read<PagarBloc>().add(OnDesactivarTarjeta());
+                Navigator.pop(context);
+              }),
         ),
         body: Stack(
-          children:  [
+          children: [
             Container(),
             Hero(
-              tag: tarjeta.cardNumber,
+              tag: tarjeta!.cardNumber,
               child: CreditCardWidget(
                   cardNumber: tarjeta.cardNumber,
                   expiryDate: tarjeta.expiracyDate,
